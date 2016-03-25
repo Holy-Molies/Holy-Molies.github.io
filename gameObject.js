@@ -36,7 +36,7 @@ function resize() {
   var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
   var canvas = document.getElementById("gameScreen");
 
-  if(currentRatio >= 1.77) {
+  if(currentRatio >= 1.77 && currentRatio <= 1.79) {
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
   }
@@ -52,6 +52,7 @@ function resize() {
   for(var i = 0; i < enemies.length; i++) {
     drawInitial(enemies[i].enemyType);
   }
+  drawBurgerInitial();
 };
 
 /*******************************************************
