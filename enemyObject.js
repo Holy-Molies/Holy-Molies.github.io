@@ -318,4 +318,6 @@ function drawInitial(enemyType) {
 	}
 };
 
-function animate()
+function animate() {
+	
+}
