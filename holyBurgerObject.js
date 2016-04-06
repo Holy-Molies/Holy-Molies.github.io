@@ -34,6 +34,7 @@ var burgerAnimationFrames = [];	//used to store animation frames
 var burgerStandingImage = null;	//used to store current still-frame of enemy
 var burgerAnimated;				//used to track animation status
 var holyBurger = null;
+var burgerAttack;
 
 function HolyBurger()
 {
@@ -43,33 +44,50 @@ function HolyBurger()
     this.tempHealthPoints = 20;
     this.defense = 1;
     this.holyMoly = 0;
-    
+
     //object function
     this.saveCharacter = saveCharacter();
     this.loadCharacter = loadCharacter();
 
-    this.attack = function() {
+    this.attack = function () {
         var damage = this.attackValue + parseInt(Math.random() * 3) - enemies[0].defense;
-        if(damage < 0) {
+        if (damage < 0) {
             damage = 0;
         }
         enemies[0].tempHealthPoints -= damage;
-        if(enemies[0].tempHealthPoints <= 0) {
+        if (enemies[0].tempHealthPoints <= 0) {
             updateMessage(enemies[0].enemyType + " has been vanquished");
             destroyEnemy();
-        }
-        else {
+        } else {
             updateMessage(enemies[0].enemyType + " took " + damage + " damage!");
             gameObject.circleBars.updateHealthBar(parseInt((enemies[0].tempHealthPoints / enemies[0].healthPoints) * 100), "enemyHealth");
         }
+        this.animateHB();
+        this.attackHB();
     }
 
-    this.frame = 0;
-    this.animate = function() {
-        //walk through the animations
+
+    this.animateHB = function () {
+        //This clearRect method clears the canvas of the previous image. Otherwise you woudld end up with layers of images.
+        burgerContext.clearRect(50, 150, 188, 163);
+        //Sets starting upper left corner of image on the canvas
+        burgerContext.drawImage(burgerAnimationFrames[burgerFrame], 50, 150);
+        //frame = (frame + 1) % frames.length;//run for loop to fully animate
+        burgerFrame = (burgerFrame + 1);
+        //alert("HERE!");
+        if (burgerFrame == 21) {
+            clearInterval(burgerAttack);//Need to define if we need to create a variable for burgerAttack or use this.attack?
+            burgerFrame = 0;
+            burgerAttack = null;
+        }
+
+    }
+    this.attackHB = function(){
+        if (!burgerAttack) {
+            burgerAttack = setInterval(this.animateHB, burgerFrameRate);
+        }
     }
 }
-
 /*******************************************************
  * Create Holy Burger
  *******************************************************/
@@ -87,42 +105,41 @@ function createHolyBurger() {
  * Author: Joseph Nixon
  *******************************************************/
 function saveCharacter() {
-  if(holyBurger && gameObject) {
-      holyBurger.holyMoly = gameObject.holyMoly;
-      localStorage.setItem('savedCharacter', JSON.stringify(holyBurger));
-  }
+    if (holyBurger && gameObject) {
+        holyBurger.holyMoly = gameObject.holyMoly;
+        localStorage.setItem('savedCharacter', JSON.stringify(holyBurger));
+    }
 }
 
 /*******************************************************
-* Loads character from LocalStorage
-* Author: Joseph Nixon
-*******************************************************/
+ * Loads character from LocalStorage
+ * Author: Joseph Nixon
+ *******************************************************/
 function loadCharacter() {
-  /*if (localStorage.savedCharacter) {
-      var tempChar = JSON.parse(localStorage.savedCharacter);
-      holyBurger.attackValue = tempChar.attackValue;
-      holyBurger.healthPoints = tempChar.healthPoints;
-      holyBurger.defense = tempChar.defense;
-      holyBurger.currency = tempChar.currency;
-  }
-  else {
-      return;
-  }*/
-  try {
-      var tempChar = JSON.parse(localStorage.savedCharacter);
-      holyBurger.attackValue = tempChar.attackValue;
-      console.log("saved attack value: " + tempChar.attackValue);
-      holyBurger.healthPoints = tempChar.healthPoints;
-      console.log("saved health points value: " + tempChar.healthPoints);
-      holyBurger.defense = tempChar.defense;
-      console.log("saved defense value: " + tempChar.defense);
-      holyBurger.holyMoly = tempChar.holyMoly;
-      console.log("saved holyMoly value: " + tempChar.holyMoly);
-      console.log("saved game moly value: " + tempChar.holyMoly);
-      holyBurger.tempHealthPoints = tempChar.healthPoints;
-      console.log("saved temp Health value: " + tempChar.tempHealthPoints);
-  }
-  catch(e) {
+    /*if (localStorage.savedCharacter) {
+     var tempChar = JSON.parse(localStorage.savedCharacter);
+     holyBurger.attackValue = tempChar.attackValue;
+     holyBurger.healthPoints = tempChar.healthPoints;
+     holyBurger.defense = tempChar.defense;
+     holyBurger.currency = tempChar.currency;
+     }
+     else {
+     return;
+     }*/
+    try {
+        var tempChar = JSON.parse(localStorage.savedCharacter);
+        holyBurger.attackValue = tempChar.attackValue;
+        console.log("saved attack value: " + tempChar.attackValue);
+        holyBurger.healthPoints = tempChar.healthPoints;
+        console.log("saved health points value: " + tempChar.healthPoints);
+        holyBurger.defense = tempChar.defense;
+        console.log("saved defense value: " + tempChar.defense);
+        holyBurger.holyMoly = tempChar.holyMoly;
+        console.log("saved holyMoly value: " + tempChar.holyMoly);
+        console.log("saved game moly value: " + tempChar.holyMoly);
+        holyBurger.tempHealthPoints = tempChar.healthPoints;
+        console.log("saved temp Health value: " + tempChar.tempHealthPoints);
+    } catch (e) {
         return;
     }
 }
@@ -138,30 +155,31 @@ function drawBurgerInitial() {
     burgerStandingImage.onload = function () {
         enemyContext.drawImage(burgerStandingImage, burgerXLocation, burgerYLocation);
     };
-    for(var i = 0; i < burgerAssets.length; i++) {
+    for (var i = 0; i < burgerAssets.length; i++) {
         burgerAnimationFrames.push(new Image());
         burgerAnimationFrames[i].src = burgerAssets[i];
     }
-};
+}
+;
 
 /*******************************************************
-* attackEnemy
-********************************************************/
+ * attackEnemy
+ ********************************************************/
 /*function attackEnemy(defender) {
-  var attack = attacker.attackValue;
-  var defense = defender.defense;
-
-  var damageDealt = attack - defense;
-  
-  if(damageDealt < 0) {
-    damageDealt = 0;
-    addMessage('Holy Burger dealt no damage to ' + defender + '!');
-  }
-  defender.healthPoints -= damageDealt;
-
-  if (defender.healthPoints <= 0)
-  {
-    destroyEnemy(defender);
-    addMessage(defender + " was defeated!");
-  }
-}*/
+ var attack = attacker.attackValue;
+ var defense = defender.defense;
+ 
+ var damageDealt = attack - defense;
+ 
+ if(damageDealt < 0) {
+ damageDealt = 0;
+ addMessage('Holy Burger dealt no damage to ' + defender + '!');
+ }
+ defender.healthPoints -= damageDealt;
+ 
+ if (defender.healthPoints <= 0)
+ {
+ destroyEnemy(defender);
+ addMessage(defender + " was defeated!");
+ }
+ }*/
