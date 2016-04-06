@@ -319,5 +319,5 @@ function drawInitial(enemyType) {
 };
 
 function animate() {
-	
+
 }

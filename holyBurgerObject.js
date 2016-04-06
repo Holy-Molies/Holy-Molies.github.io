@@ -63,6 +63,11 @@ function HolyBurger()
             gameObject.circleBars.updateHealthBar(parseInt((enemies[0].tempHealthPoints / enemies[0].healthPoints) * 100), "enemyHealth");
         }
     }
+
+    this.frame = 0;
+    this.animate = function() {
+        //walk through the animations
+    }
 }
 
 /*******************************************************
@@ -84,7 +89,6 @@ function createHolyBurger() {
 function saveCharacter() {
   if(holyBurger && gameObject) {
       holyBurger.holyMoly = gameObject.holyMoly;
-      alert(holyBurger.holyMoly);
       localStorage.setItem('savedCharacter', JSON.stringify(holyBurger));
   }
 }
@@ -136,7 +140,7 @@ function drawBurgerInitial() {
     };
     for(var i = 0; i < burgerAssets.length; i++) {
         burgerAnimationFrames.push(new Image());
-        burgerAnimationFrames[i].src = pepAssets[i];
+        burgerAnimationFrames[i].src = burgerAssets[i];
     }
 };
 

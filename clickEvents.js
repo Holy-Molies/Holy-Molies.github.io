@@ -22,7 +22,6 @@ function addClickers() {
             }
         }
     }, false);
-    alert("CLIENT WIDTH: " + clickerCanvas.clientWidth);
     buttonList.push(new ClickableButton(function() {holyBurger.attack();}, clickerCanvas.clientHeight *
         (125/800), clickerCanvas.clientWidth * (0/480), clickerCanvas.clientWidth, clickerCanvas.clientHeight * (275/800)));                    //holy burger clicker
     buttonList.push(new ClickableButton(function(){increaseHealth();}, clickerCanvas.clientHeight *

@@ -46,7 +46,6 @@ function GameObject()
         addClickers();
         this.circleBars.updateHealthBar(parseInt((holyBurger.tempHealthPoints / holyBurger.healthPoints) * 100), "burgerHealth");
         this.circleBars.updateHealthBar(parseInt((enemies[0].tempHealthPoints / enemies[0].healthPoints) * 100), "enemyHealth");
-        alert("about to load character");
         loadCharacter();
         if(holyBurger != null) {
             var numMolies = holyBurger.holyMoly;
@@ -188,9 +187,8 @@ function changeEnemyHealth(newPercent) {
 function increaseAttack() {
   if (gameObject.holyMoly >= gameObject.upAttack) {
     holyBurger.attackValue += 5;
-      alert(parseInt("upAttack: " + gameObject.holyMoly - gameObject.upAttack));
     gameObject.holyMoly = parseInt(gameObject.holyMoly - gameObject.upAttack);
-    updateHolyMolies(gameObject.holyMoly);
+    updateHolyMolies(0);
     updateMessage("Attack Upgraded!");
     gameObject.upAttack = parseInt(gameObject.upAttack * 1.3);
     updateBars();
@@ -200,9 +198,8 @@ function increaseAttack() {
 function increaseDefense() {
   if (gameObject.holyMoly >= gameObject.upDefense) {
     holyBurger.defense += 5;
-      alert("upDefense: ");
-      gameObject.holyMoly = parseInt(gameObject.holyMoly - gameObject.upDefense);
-    updateHolyMolies(gameObject.holyMoly);
+    gameObject.holyMoly = parseInt(gameObject.holyMoly - gameObject.upDefense);
+    updateHolyMolies(0);
     updateMessage("Defense Upgraded!");
     gameObject.upDefense = parseInt(gameObject.upDefense * 1.4);
     updateBars();
@@ -213,9 +210,8 @@ function increaseHealth() {
   if (gameObject.holyMoly >= gameObject.upHealth) {
     holyBurger.healthPoints += 5;
     holyBurger.tempHealthPoints = holyBurger.healthPoints;
-      alert("upHealth: " + parseInt(gameObject.holyMoly - gameObject.upHealth));
     gameObject.holyMoly = parseInt(gameObject.holyMoly - gameObject.upHealth);
-    updateHolyMolies(gameObject.holyMoly);
+    updateHolyMolies(0);
     updateMessage("Health Upgraded!");
     gameObject.upHealth = parseInt(gameObject.upHealth * 1.5);
     updateBars();
